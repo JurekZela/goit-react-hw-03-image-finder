@@ -8,7 +8,7 @@ export class App extends Component {
   };
 
   componentDidMount () {
-    const { images, pages } = this.state;
+    const { pages } = this.state;
     console.log(fetchImg('dog', pages));
   };
 
