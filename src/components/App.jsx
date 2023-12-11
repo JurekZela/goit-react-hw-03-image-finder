@@ -1,16 +1,21 @@
-export const App = () => {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
-  );
+import { Component } from 'react';
+import { fetchImg } from '../Api';
+
+export class App extends Component {
+  state = {
+    images: [],
+    pages: 1,
+  };
+
+  componentDidMount () {
+    const { images, pages } = this.state;
+    console.log(fetchImg('dog', pages));
+  };
+
+  render () {
+    return (
+      <div>
+      </div>
+    );
+  };
 };
