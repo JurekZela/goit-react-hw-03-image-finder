@@ -1,5 +1,7 @@
 import { Component } from 'react';
 import { fetchImg } from '../Api';
+import { Searchbar } from './Searchbar/Searchbar';
+import { Wrapper } from '../GlobalStyled';
 
 export class App extends Component {
   state = {
@@ -14,8 +16,9 @@ export class App extends Component {
 
   render () {
     return (
-      <div>
-      </div>
+      <Wrapper>
+        <Searchbar />
+      </Wrapper>
     );
   };
 };
