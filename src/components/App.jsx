@@ -3,49 +3,59 @@ import  { toast } from 'react-hot-toast';
 import { fetchImg } from '../Api';
 import { Searchbar } from './Searchbar/Searchbar';
 import { Wrapper } from '../GlobalStyled';
+import { ImageGallery } from './ImageGallery/ImageGallery';
 
 export class App extends Component {
   state = {
     images: [],
     query: '',
     pages: 1,
+    error:  false,
+    loading: false,
   };
 
   componentDidMount () {
   };
 
-  searchImages = newQuery => {
-    this.setState({ query: newQuery, })
-  };
+  searchImages = newQuery => this.setState({ query: newQuery, });
 
-  onSubmitForm = async () => {
+  onSubmit = async () => {
     try {
+      this.setState({ loading: true, })
       const { query, page, images } = this.state;
-      this.setState({ images: [] });     
+       
+     if (images) {
+      this.setState({ images: [],  pages: 1 }); 
+     }    
 
       const initialQuizzes = await fetchImg(query, page);
-
-      if (initialQuizzes.length) {
+      console.log(initialQuizzes);
+      if (initialQuizzes) {
         this.setState(prevState => {
           return {
             images: initialQuizzes,
             pages: prevState + 1
           }
         })
-
-        console.log(images, initialQuizzes);
       } else {
         toast.error('Oops... Not Founder! Please try again :)');
       }
+
+     
     }
-    catch{}
-    finally {}
+    catch{
+      this.setState({ error: true });
+    }
+    finally {this.setState({ loading: false, })}
   }
 
   render () {
+    const { loading, images } = this.state;
     return (
       <Wrapper>
-        <Searchbar onSubmitForm={this.onSubmitForm} onSearchQuery={this.searchImages} />
+        <Searchbar onSubmit={this.onSubmit} onChange={e => this.searchImages(e.target.value)} />
+        {loading && <b>Loader</b>}
+       {images.length > 0 &&  <ImageGallery images={images}/>}
       </Wrapper>
     );
   };
