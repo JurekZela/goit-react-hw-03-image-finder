@@ -5,7 +5,7 @@ import { Header, FormStyles as Form, Button, Input } from './Searchbar-styled';
 
 export class Searchbar extends Component {
     render() {
-        const { onSubmit } = this.props;
+        const { onSubmit, onChange } = this.props;
         return (
       <Formik>
           <Header>
@@ -18,6 +18,7 @@ export class Searchbar extends Component {
                 autoComplete="off"
                 autoFocus
                 placeholder="Search images and photos"
+                onChange={onChange}
                 />
             </Form>
         </Header>
