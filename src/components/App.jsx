@@ -29,7 +29,7 @@ export class App extends Component {
 
   onSubmit = async () => {
     try {
-      this.setState({ loading: true, })
+      this.setState({ loading: true, error: false });
       const { query, pages, images } = this.state;
        
      if (images) {
@@ -61,6 +61,8 @@ export class App extends Component {
     try {
       const { query, pages } = this.state;
 
+      this.setState({error: false});
+
       const newMoreQuizzes =  await fetchImg(query, pages);
 
       this.setState(prevState => {
@@ -73,10 +75,12 @@ export class App extends Component {
   };
 
   render () {
-    const { loading, images } = this.state;
+    const { loading, images, error } = this.state;
+
     return (
       <Wrapper>
         <Searchbar onSubmit={this.onSubmit} onChange={e => this.searchImages(e.target.value)} />
+        {error && <b>OOPS! Something went wrong! Please try reloading this page :-) </b>}
         {loading && Loader}
        {images.length > 0 && 
        <>
