@@ -23,6 +23,7 @@ export class App extends Component {
     pages: 1,
     error:  false,
     loading: false,
+    loadingMoreImages: false,
   };
 
  async componentDidUpdate(prevProps, prevState) {
@@ -39,7 +40,7 @@ export class App extends Component {
     const { pages, query } = this.state;
 
     try {
-      this.setState({ loading: true });
+      this.setState({ loading: true, loadingMoreImages: true, });
       const initialQuizzes = await fetchImg(query, pages);
 
       if (initialQuizzes.length) {
@@ -53,7 +54,7 @@ export class App extends Component {
     } catch (error) {
       console.log(error);
     }
-    finally { this.setState({ loading: false, }); }
+    finally { this.setState({ loading: false, loadingMoreImages: false, }); }
   };
 
   handleSubmit = e => {
@@ -75,7 +76,7 @@ export class App extends Component {
   };
 
   render () {
-    const { loading, images, error } = this.state;
+    const { loading, images, error, loadingMoreImages } = this.state;
 
     return (
       <Wrapper>
@@ -85,7 +86,7 @@ export class App extends Component {
        {images.length > 0 && 
        <>
        <ImageGallery images={images}/>
-       <Button onClick={this.onClickLoadMore}/>
+       <Button loader={loadingMoreImages} onClick={this.onClickLoadMore}/>
        </>}
       </Wrapper>
     );
