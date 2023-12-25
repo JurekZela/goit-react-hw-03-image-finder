@@ -7,32 +7,25 @@ export class ImageGalleryItem extends Component {
         modalOpen: false,
     };
 
-    onModalOpen = () => {
-        this.setState({ modalOpen: true });
-    };
+    onModalOpen = () => this.setState({ modalOpen: true });
 
-    onModalClose = () => {
-        this.setState({ modalOpen: false });
-    };
-
-    onToggleModal = () => {
-
-    };
-
+    onModalClose = () => this.setState({ modalOpen: false });
 
 
 render () {
     const { modalOpen } = this.state;
     const { smallImg, largeImageURL, tags } = this.props;
     return (
-    <GalleryItem onClick={this.onModalOpen}>
-        <GalleryItemImg src={smallImg} alt={tags} />
-        <LargeImage 
+    <>
+     <GalleryItem onClick={this.onModalOpen}>
+      <GalleryItemImg src={smallImg} alt={tags} />
+     </GalleryItem>
+     <LargeImage 
         isModalOpen={modalOpen} 
         closeModal={this.onModalClose} 
         largeImage={largeImageURL} 
         tags={tags}/>
-    </GalleryItem>
+    </>
     )
 };
 };
