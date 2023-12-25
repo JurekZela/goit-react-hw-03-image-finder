@@ -49,6 +49,8 @@ export class App extends Component {
             images: pages > 1 ? [...prevState.images, ...initialQuizzes] : initialQuizzes,
           }
         ))
+      } else {
+        toast.error(`Sorry, but we didn't found any image!`);
       }
 
     } catch (error) {
@@ -60,7 +62,7 @@ export class App extends Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    if (e.target.elements[1].value.trim() === '') {
+    if (e.target.elements[1].value.trim() === '' ) {
       return toast.error('Not a Value!');
     };
 
