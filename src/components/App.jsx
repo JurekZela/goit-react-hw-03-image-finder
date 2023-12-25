@@ -25,53 +25,53 @@ export class App extends Component {
     loading: false,
   };
 
-  searchImages = newQuery => this.setState({ query: newQuery, });
+ async componentDidUpdate(prevProps, prevState) {
+    const { query, pages } = this.state;
 
-  onSubmit = async () => {
+    if (prevState.query !== query || prevState.pages !== pages) {
+      this.loadingResults()
+    }
+  };
+
+  searchImages = newQuery => this.setState({ query: `${Date.now()}/${newQuery}`, pages: 1, images: [] });
+
+  loadingResults = async () => {
+    const { pages, query } = this.state;
+
     try {
-      this.setState({ loading: true, error: false });
-      const { query, pages, images } = this.state;
-       
-     if (images) {
-      this.setState({ images: [],  pages: 1 }); 
-     }    
-
+      this.setState({ loading: true });
       const initialQuizzes = await fetchImg(query, pages);
-      
-      if (initialQuizzes) {
-        this.setState(prevState => {
-          return {
-            images: initialQuizzes,
-            pages: prevState.pages + 1
+
+      if (initialQuizzes.length) {
+        this.setState( prevState => (
+          {
+            images: pages > 1 ? [...prevState.images, ...initialQuizzes] : initialQuizzes,
           }
-        })
-      } else {
-        toast.error('Oops... Not Founder! Please try again :)');
+        ))
       }
 
-     
+    } catch (error) {
+      console.log(error);
     }
-    catch{
-      this.setState({ error: true });
-    }
-    finally {this.setState({ loading: false, })}
-  }
+    finally { this.setState({ loading: false, }); }
+  };
 
-  onClickLoadMore = async () => {
-    try {
-      const { query, pages } = this.state;
+  handleSubmit = e => {
+    e.preventDefault();
 
-      this.setState({error: false});
+    if (e.target.elements[1].value.trim() === '') {
+      return toast.error('Not a Value!');
+    };
 
-      const newMoreQuizzes =  await fetchImg(query, pages);
+    this.searchImages(e.target.elements[1].value);
 
-      this.setState(prevState => {
-         return { 
-          images: [...prevState.images, ...newMoreQuizzes],
-          pages: prevState.pages + 1 
-        }
-      })
-    } catch {this.setState({ error: true });}
+    e.target.reset();
+  }; 
+
+  onClickLoadMore = () => {
+      this.setState(prevState => ({ 
+        pages: prevState.pages + 1 
+      }))
   };
 
   render () {
@@ -79,7 +79,7 @@ export class App extends Component {
 
     return (
       <Wrapper>
-        <Searchbar onSubmit={this.onSubmit} onChange={e => this.searchImages(e.target.value)} />
+        <Searchbar onSubmit={this.handleSubmit} />
         {error && <b>OOPS! Something went wrong! Please try reloading this page :-) </b>}
         {loading && Loader}
        {images.length > 0 && 

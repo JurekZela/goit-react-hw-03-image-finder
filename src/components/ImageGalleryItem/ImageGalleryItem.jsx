@@ -27,11 +27,11 @@ render () {
     return (
     <GalleryItem onClick={this.onModalOpen}>
         <GalleryItemImg src={smallImg} alt={tags} />
-  <LargeImage 
+        <LargeImage 
         isModalOpen={modalOpen} 
         closeModal={this.onModalClose} 
-        largeImage={largeImageURL}
-        />
+        largeImage={largeImageURL} 
+        tags={tags}/>
     </GalleryItem>
     )
 };
