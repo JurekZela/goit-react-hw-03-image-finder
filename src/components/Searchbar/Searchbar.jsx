@@ -1,11 +1,8 @@
-import { Component } from 'react';
 import { Formik } from 'formik';
 import { ReactComponent as SearchIcon} from '../images/search.svg';
 import { Header, FormStyles as Form, Button, Input } from './Searchbar-styled';
 
-export class Searchbar extends Component {
-    render() {
-        const { onSubmit } = this.props;
+export const Searchbar = ({ onSubmit }) => {
         return (
       <Formik  >
           <Header>
@@ -24,4 +21,3 @@ export class Searchbar extends Component {
       </Formik>
         )
     };
-};

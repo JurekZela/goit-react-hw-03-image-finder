@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import  { toast } from 'react-hot-toast';
 import { RotatingTriangles } from 'react-loader-spinner'
 import { fetchImg } from '../Api';
@@ -16,81 +16,80 @@ wrapperStyle={{}}
 wrapperClass="rotating-triangels-wrapper"
 />
 
-export class App extends Component {
-  state = {
-    images: [],
-    query: '',
-    pages: 1,
-    error:  false,
-    loading: false,
-    loadingMoreImages: false,
-  };
+export const App = () => {
+  const [images, setImages] = useState([]);
+  const [query, setQuery] = useState('');
+  const [pages, setPages] = useState(1);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loadingMoreImages, setLoadingMoreImages] = useState(false);
 
- async componentDidUpdate(prevProps, prevState) {
-    const { query, pages } = this.state;
+  useEffect(() => {
+    async function loadingResults() {
+      try {
+        setLoading(true);
+        setLoadingMoreImages(true);
 
-    if (prevState.query !== query || prevState.pages !== pages) {
-      this.loadingResults()
-    }
-  };
+        if (!query) {
+          return;
+        };
 
-  searchImages = newQuery => this.setState({ query: `${Date.now()}/${newQuery}`, pages: 1, images: [] });
-
-  loadingResults = async () => {
-    const { pages, query } = this.state;
-
-    try {
-      this.setState({ loading: true, loadingMoreImages: true, });
-      const initialQuizzes = await fetchImg(query, pages);
-
-      if (initialQuizzes.length) {
-        this.setState( prevState => (
-          {
-            images: pages > 1 ? [...prevState.images, ...initialQuizzes] : initialQuizzes,
-          }
-        ))
-      } else {
-        toast.error(`Sorry, but we didn't found any image!`);
+        const initialQuizzes = await fetchImg(query, pages);
+  
+        if (initialQuizzes.length) {
+          setImages(prevImages => pages > 1 ? [...prevImages, ...initialQuizzes ] : initialQuizzes)
+        } else {
+          toast.error(`Sorry, but we didn't found any image!`);
+        }
+  
+      } catch{
+        setError(true);
       }
-
-    } catch (error) {
-      console.log(error);
+      finally {
+        setLoading(false);
+        setLoadingMoreImages(false);
+      }
     }
-    finally { this.setState({ loading: false, loadingMoreImages: false, }); }
+
+    loadingResults()
+  }, [query, pages]);
+
+  const searchImages = newQuery => {
+    const currentQuery = `${Date.now()}/${newQuery}`;
+
+    setQuery(currentQuery);
+    setPages(1);
+    setImages([]);
   };
 
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
 
-    if (e.target.elements[1].value.trim() === '' ) {
+    const value = e.target.elements[1].value.trim()
+
+    if (!value) {
       return toast.error('Not a Value!');
     };
-
-    this.searchImages(e.target.elements[1].value);
+    
+    searchImages(value);
 
     e.target.reset();
-  }; 
-
-  onClickLoadMore = () => {
-      this.setState(prevState => ({ 
-        pages: prevState.pages + 1 
-      }))
   };
 
-  render () {
-    const { loading, images, error, loadingMoreImages } = this.state;
+ const onClickLoadMore = () => setPages(prevPages => prevPages + 1);
 
-    return (
-      <Wrapper>
-        <Searchbar onSubmit={this.handleSubmit} />
-        {error && <b>OOPS! Something went wrong! Please try reloading this page :-) </b>}
-        {loading && Loader}
-       {images.length > 0 && 
-       <>
-       <ImageGallery images={images}/>
-       <Button loader={loadingMoreImages} onClick={this.onClickLoadMore}/>
-       </>}
-      </Wrapper>
-    );
-  };
+  return (
+    <Wrapper>
+      <Searchbar onSubmit={handleSubmit} />
+      {error && <b>OOPS! Something went wrong! Please try reloading this page :-) </b>}
+      {loading && Loader}
+     {
+     images.length > 0 && 
+     <>
+     <ImageGallery images={images}/>
+     <Button loader={loadingMoreImages} onClick={onClickLoadMore}/>
+     </>
+     }
+    </Wrapper>
+  );
 };
