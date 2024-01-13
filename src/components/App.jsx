@@ -35,9 +35,9 @@ export const App = () => {
         };
 
         const initialQuizzes = await fetchImg(query, pages);
-  
-        if (initialQuizzes.length) {
-          setImages(prevImages => pages > 1 ? [...prevImages, ...initialQuizzes ] : initialQuizzes)
+
+        if (initialQuizzes.hits.length) {
+          setImages(prevImages => pages > 1 ? [...prevImages, ...initialQuizzes.hits ] : initialQuizzes.hits)
         } else {
           toast.error(`Sorry, but we didn't found any image!`);
         }
@@ -87,7 +87,7 @@ export const App = () => {
      images.length > 0 && 
      <>
      <ImageGallery images={images}/>
-     <Button loader={loadingMoreImages} onClick={onClickLoadMore}/>
+     {initialQuizzes.totalHits ? <Button loader={loadingMoreImages} onClick={onClickLoadMore}/> : null}
      </>
      }
     </Wrapper>
