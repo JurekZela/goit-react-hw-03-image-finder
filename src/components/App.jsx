@@ -36,15 +36,12 @@ export const App = () => {
         };
 
         const initialQuizzes = await fetchImg(query, pages);
-        setTotalHits(initialQuizzes.totalHits);
-        
-        if (initialQuizzes.hits.length > 1) {
-          setImages(prevImages => pages && [...prevImages, ...initialQuizzes.hits ])
-        } else {
-          toast.error(`Sorry, but we didn't found any image!`);
+           setTotalHits(initialQuizzes.totalHits);
 
-        }
-  
+           initialQuizzes.hits.length > 1 ?
+           setImages(prevImages => pages && [...prevImages, ...initialQuizzes.hits ])
+           : toast.error(`Sorry, but we didn't found any image!`);
+           
       } catch{
         setError(true);
       }
@@ -70,11 +67,7 @@ export const App = () => {
 
     const value = e.target.elements[1].value.trim()
 
-    if (!value) {
-      return toast.error('Not a Value!');
-    };
-    
-    searchImages(value);
+    !value ? toast.error('Not a Value!') : searchImages(value);
 
     e.target.reset();
   };
