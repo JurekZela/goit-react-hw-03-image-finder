@@ -23,6 +23,7 @@ export const App = () => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingMoreImages, setLoadingMoreImages] = useState(false);
+  const [totalHits, setTotalHits] = useState(0);
 
   useEffect(() => {
     async function loadingResults() {
@@ -35,11 +36,13 @@ export const App = () => {
         };
 
         const initialQuizzes = await fetchImg(query, pages);
-
-        if (initialQuizzes.hits.length) {
-          setImages(prevImages => pages > 1 ? [...prevImages, ...initialQuizzes.hits ] : initialQuizzes.hits)
+        setTotalHits(initialQuizzes.totalHits);
+        
+        if (initialQuizzes.hits.length > 1) {
+          setImages(prevImages => pages && [...prevImages, ...initialQuizzes.hits ])
         } else {
           toast.error(`Sorry, but we didn't found any image!`);
+
         }
   
       } catch{
@@ -87,7 +90,7 @@ export const App = () => {
      images.length > 0 && 
      <>
      <ImageGallery images={images}/>
-     {initialQuizzes.totalHits ? <Button loader={loadingMoreImages} onClick={onClickLoadMore}/> : null}
+     { pages < totalHits && (<Button loader={loadingMoreImages} onClick={onClickLoadMore}/>)}
      </>
      }
     </Wrapper>
