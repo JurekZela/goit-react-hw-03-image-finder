@@ -36,6 +36,7 @@ export const App = () => {
         };
 
         const initialQuizzes = await fetchImg(query, pages);
+
            setTotalHits(initialQuizzes.totalHits);
 
            initialQuizzes.hits.length > 1 ?
@@ -83,7 +84,7 @@ export const App = () => {
      images.length > 0 && 
      <>
      <ImageGallery images={images}/>
-     { pages < totalHits && (<Button loader={loadingMoreImages} onClick={onClickLoadMore}/>)}
+     { images.length < totalHits && <Button loader={loadingMoreImages} onClick={onClickLoadMore}/>}
      </>
      }
     </Wrapper>
